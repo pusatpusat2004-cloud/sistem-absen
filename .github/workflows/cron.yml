@@ -1,0 +1,29 @@
+name: Absensi Otomatis Daily
+
+on:
+  schedule:
+    # Menggunakan format Cron UTC. 
+    # Jam 00:00 UTC sama dengan Jam 07:00 WIB (Pagi)
+    # Jalani setiap hari Senin sampai Jumat (M-F)
+    - cron: '0 0 * * 1-5'
+  workflow_dispatch: # Tombol manual agar bisa ditest kapan saja
+
+jobs:
+  absen:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout kode dari repositori
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    # 2. Setup lingkungan Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    # 3. Jalankan skrip aplikasi absensi barumu
+    # (Pastikan nama file di bawah ini sama dengan nama file Python baru yang kamu buat)
+    - name: Run Attendance Script
+      run: python app.py
