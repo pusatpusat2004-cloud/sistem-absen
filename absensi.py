@@ -1,21 +1,42 @@
+import csv
+import os
 from datetime import datetime
-import pytz
 
-# Atur zona waktu ke Waktu Indonesia Barat (WIB)
-timezone = pytz.timezone('Asia/Jakarta')
-waktu_sekarang = datetime.now(timezone)
+# Nama file database untuk menyimpan data absensi
+FILE_DATABASE = "database_absensi.csv"
 
-# Format tanggal dan waktu
-tanggal = waktu_sekarang.strftime("%Y-%m-%d")
-jam = waktu_sekarang.strftime("%H:%M:%S")
+def inisialisasi_database():
+    """Membuat file database CSV beserta headernya jika belum ada"""
+    if not os.path.exists(FILE_DATABASE):
+        with open(FILE_DATABASE, mode="w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow(["Tanggal", "Waktu", "NIM", "Nama", "Kelas", "Status Kehadiran"])
 
-# Teks yang akan dimasukkan ke dalam file log
-log_kehadiran = f"| {tanggal} | {jam} | Hadir (Otomatis via GitHub Actions) |\n"
+def absen_otomatis_server():
+    """Fungsi absensi otomatis tanpa meminta input mengetik"""
+    # KARENA DIJALANKAN OLEH BOT, DATA KITA SET OTOMATIS DI SINI:
+    nim = "SERVER-BOT"
+    nama = "GitHub Actions"
+    kelas = "Cloud-System"
+    status = "Hadir"
 
-# Tulis ke file absensi.md
-try:
-    with open("absensi.md", "a") as file:
-        file.write(log_kehadiran)
-    print(# "Absensi berhasil dicatat untuk tanggal:", tanggal)
-except Exception as e:
-    print(f"Terjadi kesalahan: {e}")
+    # Mengambil tanggal dan waktu saat ini
+    waktu_sekarang = datetime.now()
+    tanggal = waktu_sekarang.strftime("%Y-%m-%d")
+    jam = waktu_sekarang.strftime("%H:%M:%S")
+
+    try:
+        with open(FILE_DATABASE, mode="a", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow([tanggal, jam, nim, nama, kelas, status])
+        print(f"✅ Sukses! Bot berhasil mencatat kehadiran otomatis pada {tanggal} jam {jam}.")
+    except Exception as e:
+        print(f"❌ Gagal menyimpan data: {e}")
+
+def main():
+    inisialisasi_database()
+    # Langsung jalankan fungsi otomatis tanpa menu pilihan
+    absen_otomatis_server()
+
+if __name__ == "__main__":
+    main()
